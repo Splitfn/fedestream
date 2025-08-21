@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fedestream - Serie TV & Film</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #121212; color: #fff; margin: 0; padding: 0; }
-    header { background: #1a1a1a; padding: 20px; text-align: center; }
-    header nav a { margin: 0 15px; color: #fff; text-decoration: none; font-weight: bold; }
-    .container { padding: 20px; }
-    .series-card { background: #1e1e1e; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-    .series-card h2 { margin-top: 0; }
-    .btn { background: #B20710; border: none; padding: 10px 15px; color: #fff; cursor: pointer; border-radius: 5px; margin-top: 10px; }
-    iframe { width: 100%; height: 500px; border: none; margin-top: 20px; border-radius: 8px; }
-    .episodes button { margin: 5px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fedestream - Serie/Film</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; padding:0;}
+  header { background:#1a1a1a; padding:20px; text-align:center;}
+  header nav a { margin:0 15px; color:#fff; text-decoration:none; font-weight:bold;}
+  .container { padding:20px; max-width:900px; margin:auto;}
+  h1, h2 { color:#B20710;}
+  .section { background:#1e1e1e; padding:15px; border-radius:8px; margin-bottom:20px;}
+  .episodes button { margin:5px; padding:5px 10px; border:none; border-radius:5px; cursor:pointer; background:#B20710; color:#fff;}
+  iframe { width:100%; height:500px; border:none; border-radius:8px; margin-top:10px;}
+</style>
 </head>
 <body>
 
@@ -24,41 +23,50 @@
     <a href="#">Serie TV</a>
     <a href="#">Film</a>
     <a href="#">Archivio</a>
-    <a href="#">Premium</a>
-    <a href="#">Richiedi un titolo</a>
   </nav>
 </header>
 
 <div class="container">
 
-  <!-- Scheda Serie/Film -->
-  <div class="series-card">
-    <h2>SANÒ (2022 - 2 stagioni)</h2>
-    <p>Views: 764K - 18+ - HD</p>
+  <!-- PANORAMICA -->
+  <div class="section" id="overview">
+    <h1>SANÒ (2022)</h1>
+    <p><strong>Cast:</strong> David Thewlis, Gwendoline Christie, Stephen Fry</p>
+    <p><strong>Genere:</strong> Dramma, Sci-Fi & Fantasy</p>
     <p>La storia di Dream, che si risveglia da un sonno in cattività durato 105 anni e si propone di ripristinare il regno dei Sogni, caduto nel caos in sua assenza.</p>
-    <p>Cast: David Thewlis, Gwendoline Christie, Stephen Fry</p>
-    <p>Genere: Dramma, Sci-Fi & Fantasy</p>
-    <button class="btn" onclick="playSeries()">Riproduci</button>
   </div>
 
-  <!-- Player -->
-  <div id="player"></div>
+  <!-- EPISODI -->
+  <div class="section" id="episodes">
+    <h2>Episodi</h2>
+    <div class="episodes">
+      <button onclick="playEpisode(1)">Stagione 1 - Episodio 1</button>
+      <button onclick="playEpisode(2)">Stagione 1 - Episodio 2</button>
+      <button onclick="playEpisode(3)">Stagione 1 - Episodio 3</button>
+    </div>
+  </div>
+
+  <!-- PLAYER -->
+  <div class="section" id="player">
+    <h2>Player</h2>
+    <iframe id="vixPlayer" src="" allowfullscreen></iframe>
+  </div>
+
+  <!-- TRAILER -->
+  <div class="section" id="trailer">
+    <h2>Trailer</h2>
+    <iframe src="https://www.youtube.com/embed/YOUR_TRAILER_ID" allowfullscreen></iframe>
+  </div>
 
 </div>
 
 <script>
-  // Funzione per riprodurre la serie tramite VixSrc
-  function playSeries() {
-    const playerDiv = document.getElementById('player');
+  const tvId = 12345; // sostituire con ID reale VixSrc
 
-    // Esempio VixSrc per serie con stagione 1 episodio 1
-    const tvId = 12345;        // Sostituire con l'ID reale TMDB o VixSrc
-    const seasonNumber = 1;
-    const episodeNumber = 1;
-
-    playerDiv.innerHTML = `
-      <iframe src="https://vixsrc.to/tv/${tvId}/${seasonNumber}/${episodeNumber}" allowfullscreen></iframe>
-    `;
+  function playEpisode(episodeNumber){
+    const iframe = document.getElementById('vixPlayer');
+    // Aggiorna l'iframe per l'episodio selezionato
+    iframe.src = `https://vixsrc.to/tv/${tvId}/1/${episodeNumber}`; 
   }
 </script>
 
