@@ -1,9 +1,35 @@
-body { margin:0; font-family: Arial, sans-serif; background:#121212; color:white;}
-header { background:#1a1a1a; padding:20px; display:flex; justify-content:space-between; align-items:center;}
-header input { padding:10px; width:300px; border-radius:5px; border:none;}
-#mainContent { display:flex; flex-wrap:wrap; gap:20px; padding:20px;}
-.card { width:200px; background:#1e1e1e; border-radius:8px; overflow:hidden; cursor:pointer;}
-.card img { width:100%;}
-.card h3 { text-align:center; padding:5px;}
-.player-container { width:100%; margin-top:20px;}
-iframe { width:100%; height:500px; border:none; border-radius:8px;}
+const API_KEY = "98fcae4e578571a0ff1b8b7ba599f6ef";
+const BASE_URL = "https://api.themoviedb.org/3";
+const IMAGE_BASE = "https://image.tmdb.org/t/p/w200";
+
+function search() {
+    const query = document.getElementById("searchInput").value;
+    if (!query) return;
+
+    fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=it&query=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = "";
+
+            data.results.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "movie-card clearfix";
+
+                const imgSrc = item.poster_path ? IMAGE_BASE + item.poster_path : "";
+                card.innerHTML = `
+                    <img src="${imgSrc}" alt="${item.title || item.name}">
+                    <h3>${item.title || item.name} (${(item.release_date || item.first_air_date || "").split("-")[0]})</h3>
+                    <p>Tipo: ${item.media_type}</p>
+                    <p>${item.overview || "Nessuna descrizione disponibile."}</p>
+                    <button onclick="play('${item.id}', '${item.media_type}')">Riproduci</button>
+                `;
+                resultsDiv.appendChild(card);
+            });
+        })
+        .catch(err => console.error(err));
+}
+
+function play(id, type) {
+    alert(`Qui partirà il player per ${type} con ID TMDB: ${id}\nIn futuro puoi integrare un player come VixSrc.`);
+}
