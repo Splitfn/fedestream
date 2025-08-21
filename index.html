@@ -3,70 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fedestream - Titolo</title>
-<style>
-body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; padding:0;}
-header { background:#1a1a1a; padding:20px; text-align:center;}
-header nav a { margin:0 10px; color:#fff; text-decoration:none; font-weight:bold;}
-.container { padding:20px; max-width:900px; margin:auto;}
-h1, h2 { color:#B20710;}
-.section { background:#1e1e1e; padding:15px; border-radius:8px; margin-bottom:20px;}
-.episodes button { margin:5px; padding:5px 10px; border:none; border-radius:5px; cursor:pointer; background:#B20710; color:#fff;}
-iframe { width:100%; height:500px; border:none; border-radius:8px; margin-top:10px;}
-</style>
+<title>Fedestream</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <header>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="#">Film</a>
-    <a href="#">Serie TV</a>
-    <a href="#">Anime</a>
-  </nav>
+  <h1>Fedestream</h1>
+  <input type="text" id="searchInput" placeholder="Cerca film o serie..." onkeyup="searchContent()">
 </header>
 
-<div class="container">
+<main id="mainContent"></main>
 
-  <!-- PANORAMICA -->
-  <div class="section" id="overview">
-    <h1>Titolo del Film/Serie</h1>
-    <p><strong>Cast:</strong> Nome Attore, Nome Attore</p>
-    <p><strong>Genere:</strong> Genere</p>
-    <p>Descrizione breve della trama.</p>
-  </div>
-
-  <!-- EPISODI (solo per serie) -->
-  <div class="section" id="episodes">
-    <h2>Episodi</h2>
-    <div class="episodes">
-      <button onclick="playEpisode(1)">Stagione 1 - Episodio 1</button>
-      <button onclick="playEpisode(2)">Stagione 1 - Episodio 2</button>
-    </div>
-  </div>
-
-  <!-- PLAYER -->
-  <div class="section" id="player">
-    <h2>Player</h2>
-    <iframe id="vixPlayer" src="" allowfullscreen></iframe>
-  </div>
-
-  <!-- TRAILER -->
-  <div class="section" id="trailer">
-    <h2>Trailer</h2>
-    <iframe src="https://www.youtube.com/embed/YOUR_TRAILER_ID" allowfullscreen></iframe>
-  </div>
-
-</div>
-
-<script>
-const tvId = 12345; // ID VixSrc
-
-function playEpisode(episodeNumber){
-  const iframe = document.getElementById('vixPlayer');
-  iframe.src = `https://vixsrc.to/tv/${tvId}/1/${episodeNumber}`; 
-}
-</script>
-
+<script src="content.js"></script>
 </body>
 </html>
