@@ -1,60 +1,68 @@
-const apiKey = '98fcae4e578571a0ff1b8b7ba599f6ef'; // TMDB API Key
-const main = document.getElementById('mainContent');
-
-// Carica film popolari
-async function fetchMovies() {
-    const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=it`);
-    const data = await res.json();
-    renderCards(data.results, 'movie');
+body {
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+    margin: 0;
+    padding: 0;
 }
 
-// Carica serie popolari
-async function fetchSeries() {
-    const res = await fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${apiKey}&language=it`);
-    const data = await res.json();
-    renderCards(data.results, 'tv');
+header {
+    background-color: #1a1a1a;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-// Mostra le schede
-function renderCards(items, type) {
-    main.innerHTML = '';
-    items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.title || item.name}">
-            <h3>${item.title || item.name}</h3>
-        `;
-        card.onclick = () => openItem(item, type);
-        main.appendChild(card);
-    });
+header h1 {
+    margin: 0;
+    font-size: 24px;
 }
 
-// Apri film o serie con player e trailer
-function openItem(item, type) {
-    let title = item.title || item.name;
-    main.innerHTML = `
-        <h2>${title} (${(item.release_date || item.first_air_date).split('-')[0]})</h2>
-        <p>${item.overview}</p>
-        <div class="player-container">
-            <iframe src="https://vixsrc.to/${type}/${item.id}" allowfullscreen></iframe>
-        </div>
-        <div class="trailer">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(title + ' trailer')}" frameborder="0" allowfullscreen></iframe>
-        </div>
-    `;
+header input {
+    flex: 1;
+    padding: 5px 10px;
+    font-size: 16px;
 }
 
-// Ricerca interna
-function searchContent() {
-    const input = document.getElementById('searchInput').value.toLowerCase();
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        const title = card.querySelector('h3').innerText.toLowerCase();
-        card.style.display = title.includes(input) ? 'block' : 'none';
-    });
+header button {
+    padding: 6px 12px;
+    background-color: #b20710;
+    border: none;
+    color: #fff;
+    cursor: pointer;
 }
 
-// Carica tutto
-fetchMovies();
-fetchSeries();
+#mainContent {
+    padding: 20px;
+}
+
+.movie-card {
+    background-color: #222;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.movie-card img {
+    width: 150px;
+    height: auto;
+    float: left;
+    margin-right: 15px;
+    border-radius: 5px;
+}
+
+.movie-card h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.movie-card p {
+    margin: 5px 0;
+}
+
+.clearfix::after {
+    content: "";
+    display: block;
+    clear: both;
+}
