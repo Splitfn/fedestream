@@ -5,65 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fedestream</title>
   <style>
-    body { font-family: Arial, sans-serif; background:#141414; color:#fff; text-align:center; }
-    header { background:#e50914; padding:20px; font-size:2em; }
-    input, button { padding:10px; font-size:1em; border-radius:5px; border:none; margin:5px; }
-    input { width:60%; }
-    button { background:#e50914; color:#fff; cursor:pointer; }
-    .results { margin-top:20px; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
-    .card { background:#222; padding:10px; border-radius:5px; width:200px; text-align:center; }
-    iframe { width:80%; height:500px; border:none; border-radius:8px; margin-top:20px; display:none; }
+    body { font-family: Arial, sans-serif; background: #121212; color: #fff; }
+    header { padding: 20px; text-align: center; }
+    input { padding: 10px; width: 300px; }
+    button { padding: 10px; }
+    .results { display: flex; flex-wrap: wrap; gap: 10px; padding: 20px; }
+    .movie { width: 200px; }
+    .movie img { width: 100%; border-radius: 8px; }
+    .movie-title { text-align: center; margin-top: 5px; }
   </style>
 </head>
 <body>
-  <header>Fedestream</header>
-  <input type="text" id="searchInput" placeholder="Cerca un film o serie...">
-  <button onclick="search()">Cerca</button>
+  <header>
+    <h1>Fedestream</h1>
+    <input type="text" id="searchInput" placeholder="Cerca un film o una serie">
+    <button onclick="search()">Cerca</button>
+  </header>
 
   <div class="results" id="results"></div>
-  <iframe id="player" allowfullscreen></iframe>
 
   <script>
+    const API_KEY = '98fcae4e578571a0ff1b8b7ba599f6ef'; // La tua chiave TMDB
+    const IMAGE_BASE = 'https://image.tmdb.org/t/p/w300';
+
     async function search() {
-      const query = document.getElementById('searchInput').value.trim();
-      if(!query) return alert("Inserisci un titolo valido!");
-
-      // Puliamo i risultati precedenti
+      const query = document.getElementById('searchInput').value;
       const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = 'Caricamento...';
+
+      const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&language=it&query=${query}`);
+      const data = await res.json();
+
       resultsDiv.innerHTML = '';
-      document.getElementById('player').style.display = 'none';
-
-      // Chiamata API VixSrc
-      try {
-        const res = await fetch(`https://vixsrc.to/api/list/movie?lang=it&q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-
-        if(data.results.length === 0) {
-          resultsDiv.innerHTML = "<p>Nessun risultato trovato</p>";
-          return;
-        }
-
-        data.results.forEach(item => {
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.innerHTML = `
-            <strong>${item.title}</strong><br>
-            <img src="${item.poster}" width="150"><br>
-            <button onclick="play('${item.id}')">Play</button>
-          `;
-          resultsDiv.appendChild(card);
-        });
-      } catch(err) {
-        console.error(err);
-        alert("Errore nel recupero dei dati!");
+      if(data.results.length === 0) {
+        resultsDiv.innerHTML = 'Nessun risultato trovato.';
+        return;
       }
+
+      data.results.forEach(item => {
+        const title = item.title || item.name;
+        const poster = item.poster_path ? IMAGE_BASE + item.poster_path : '';
+        const movieDiv = document.createElement('div');
+        movieDiv.className = 'movie';
+        movieDiv.innerHTML = `
+          <img src="${poster}" alt="${title}">
+          <div class="movie-title">${title}</div>
+          <button onclick="play('${item.id}', '${item.media_type}')">Play</button>
+        `;
+        resultsDiv.appendChild(movieDiv);
+      });
     }
 
-    function play(tmdbId) {
-      const player = document.getElementById('player');
-      player.src = `https://vixsrc.to/movie/${tmdbId}/?autoplay=true&primaryColor=B20710&secondaryColor=170000&lang=it`;
-      player.style.display = 'block';
-      player.scrollIntoView({behavior:"smooth"});
+    function play(id, type) {
+      let url = '';
+      if(type === 'movie') {
+        url = `https://vixsrc.to/movie/${id}`;
+      } else if(type === 'tv') {
+        url = `https://vixsrc.to/tv/${id}/1/1`; // prima stagione, primo episodio
+      }
+      window.open(url, '_blank');
     }
   </script>
 </body>
