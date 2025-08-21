@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fedestream</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fedestream</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>Fedestream</h1>
-  <input type="text" id="searchInput" placeholder="Cerca film o serie..." onkeyup="searchContent()">
-</header>
+    <header>
+        <h1>Fedestream</h1>
+        <input type="text" id="searchInput" placeholder="Cerca film o serie...">
+        <button onclick="search()">Cerca</button>
+    </header>
 
-<main id="mainContent"></main>
+    <main id="mainContent">
+        <section id="results"></section>
+    </main>
 
-<script src="content.js"></script>
+    <script src="contentJs.js"></script>
 </body>
 </html>
