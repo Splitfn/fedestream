@@ -9,10 +9,11 @@
     header { padding: 20px; text-align: center; }
     input { padding: 10px; width: 300px; }
     button { padding: 10px; }
-    .results { display: flex; flex-wrap: wrap; gap: 10px; padding: 20px; }
+    .results, .episodes { display: flex; flex-wrap: wrap; gap: 10px; padding: 20px; }
     .movie { width: 200px; }
     .movie img { width: 100%; border-radius: 8px; }
     .movie-title { text-align: center; margin-top: 5px; }
+    iframe { width: 100%; height: 500px; border: none; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -23,15 +24,17 @@
   </header>
 
   <div class="results" id="results"></div>
+  <div id="player"></div>
 
   <script>
-    const API_KEY = '98fcae4e578571a0ff1b8b7ba599f6ef'; // La tua chiave TMDB
+    const API_KEY = '98fcae4e578571a0ff1b8b7ba599f6ef'; // TMDB API
     const IMAGE_BASE = 'https://image.tmdb.org/t/p/w300';
 
     async function search() {
       const query = document.getElementById('searchInput').value;
       const resultsDiv = document.getElementById('results');
       resultsDiv.innerHTML = 'Caricamento...';
+      document.getElementById('player').innerHTML = '';
 
       const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&language=it&query=${query}`);
       const data = await res.json();
@@ -50,20 +53,50 @@
         movieDiv.innerHTML = `
           <img src="${poster}" alt="${title}">
           <div class="movie-title">${title}</div>
-          <button onclick="play('${item.id}', '${item.media_type}')">Play</button>
+          <button onclick="loadPlayer(${item.id}, '${item.media_type}')">Play</button>
         `;
         resultsDiv.appendChild(movieDiv);
       });
     }
 
-    function play(id, type) {
-      let url = '';
+    async function loadPlayer(id, type) {
+      const playerDiv = document.getElementById('player');
+      playerDiv.innerHTML = 'Caricamento player...';
+
       if(type === 'movie') {
-        url = `https://vixsrc.to/movie/${id}`;
+        // Player film
+        playerDiv.innerHTML = `<iframe src="https://vixsrc.to/movie/${id}" allowfullscreen></iframe>`;
       } else if(type === 'tv') {
-        url = `https://vixsrc.to/tv/${id}/1/1`; // prima stagione, primo episodio
+        // Serie TV → carica stagioni ed episodi
+        const res = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}&language=it`);
+        const data = await res.json();
+
+        let seasonsHtml = '<h2>Seleziona stagione</h2><div class="episodes">';
+        data.seasons.forEach(season => {
+          if(season.season_number > 0) {
+            seasonsHtml += `<button onclick="loadEpisodes(${id}, ${season.season_number})">Stagione ${season.season_number}</button>`;
+          }
+        });
+        seasonsHtml += '</div>';
+        playerDiv.innerHTML = seasonsHtml;
       }
-      window.open(url, '_blank');
+    }
+
+    async function loadEpisodes(tvId, seasonNumber) {
+      const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it`);
+      const data = await res.json();
+
+      let episodesHtml = '<h2>Seleziona episodio</h2><div class="episodes">';
+      data.episodes.forEach(ep => {
+        episodesHtml += `<button onclick="playEpisode(${tvId}, ${seasonNumber}, ${ep.episode_number})">${ep.episode_number}. ${ep.name}</button>`;
+      });
+      episodesHtml += '</div>';
+      document.getElementById('player').innerHTML = episodesHtml;
+    }
+
+    function playEpisode(tvId, seasonNumber, episodeNumber) {
+      const playerDiv = document.getElementById('player');
+      playerDiv.innerHTML = `<iframe src="https://vixsrc.to/tv/${tvId}/${seasonNumber}/${episodeNumber}" allowfullscreen></iframe>`;
     }
   </script>
 </body>
